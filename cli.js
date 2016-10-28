@@ -13,11 +13,11 @@ const cli = meow(`
 
     Examples
       $ duo gen -y
-      
+
 `, {
-    alias: {
-        y: 'yes'
-    }
+  alias: {
+    y: 'yes'
+  }
 })
 
 if (cli.input.length === 0) {
