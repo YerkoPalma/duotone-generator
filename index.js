@@ -1,41 +1,67 @@
 const chroma = require('chroma-js')
 const execa = require('execa')
 const Confirm = require('prompt-confirm')
+const path = require('path')
+const fs = require('fs')
 // const style = require('ansi-styles')
 
 // minimum contrast constants
-const AA = 4.5
-// const AA_LARGE = 3
-// const AAA = 7
-// const AAA_LARGE = 4.5
+const minimums = {
+  AA: 4.5,
+  AAA: 7
+}
+
 // base repo for the theme
 const REPO = 'https://github.com/simurai/duotone-syntax.git'
+let themeName = 'duotone-syntax'
 
-const gen = (color1, color2) => {
+const gen = (hueUno, hueDuo, options) => {
 
 }
 
-const check = (color1, color2) => {
-  const minimum = AA
-  const contrast = chroma.contrast(color1, color2)
+const check = (hueUno, hueDuo, options) => {
+  options = options || {}
+  const minimum = options.minimum 
+                  ? (options.minimum === 'AA' || options.minimum === 'AAA' ? minimums[options.minimum] : minimums['AA']) 
+                  : minimums['AA']
+
+  const colorUno = chroma.hsl(hueUno, 0.99, 0.96)
+  const colorDuo = chroma.hsl(hueDuo, 0.99, 0.77)
+  const bgColor = chroma.hsl(hueUno, 0.12, 0.18)
+  
+  const contrastUno = chroma.contrast(colorUno, bgColor)
+  const contrastDuo = chroma.contrast(colorDuo, bgColor)
   // const errorColor = chroma('pink').rgb
   // const successColor = chroma('green').rgb
 
-  if (contrast < minimum) {
+  if (contrastUno < minimum || contrastDuo < minimum) {
     // console.log(`${style.color.ansi256.grb(...errorColor)} Contrast too low ${style.color.close}`)
-    console.log(`contrast too low ${contrast}`)
+    console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
     process.exit(1)
   } else {
-    const confirm = new Confirm({
+    const confirmGeneration = new Confirm({
       name: 'generate',
       message: 'Your colors are fine, would you like to generate a duotone theme now?'
     })
 
-    confirm.ask(function (answer) {
+    confirmGeneration.ask(function (answer) {
       if (!answer) process.exit(0)
 
       execa('git', ['clone', REPO]).then(result => {
+        // the colors.less file from the original repo
+        const colors = path.resolve(__dirname, path.join(themeName, 'styles', 'colors.less'))
 
+        fs.readFile(colors, 'utf8', function (err,data) {
+          if (err) {
+            return console.log(err)
+          }
+          let result = data.replace(/@syntax-uno:    240;/g, `@syntax-uno:    ${hueUno};`)
+          result = result.replace(/@syntax-duo:    20;/g, `@syntax-duo:    ${hueDuo};`)
+        
+          fs.writeFile(colors, result, 'utf8', function (err) {
+             if (err) return console.log(err)
+          })
+        })
       })
     })
     // console.log(`${style.color.ansi256.grb(...successColor)} Nice contrast! ${style.color.close}`)
