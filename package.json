@@ -1,0 +1,37 @@
+{
+  "name": "duotone-generator",
+  "description": "generate duotone atom themes with contrast checker",
+  "author": "YerkoPalma",
+  "version": "0.1.0",
+  "main": "index.js",
+  "bin": {
+    "duo": "cli.js"
+  },
+  "files": [
+    "cli.js",
+    "index.js"
+  ],
+  "browserify": {
+    "transform": [
+      "es2040"
+    ]
+  },
+  "scripts": {
+    "test": "standard --verbose | snazzy && ava"
+  },
+  "repository": "YerkoPalma/duotone-generator",
+  "keywords": [],
+  "license": "MIT",
+  "dependencies": {
+    "ansi-styles": "2.1.0",
+    "chroma-js": "^1.2.1",
+    "execa": "^0.5.0",
+    "meow": "^3.7.0",
+    "prompt-confirm": "^0.2.1"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "snazzy": "^5.0.0",
+    "standard": "^8.5.0"
+  }
+}
