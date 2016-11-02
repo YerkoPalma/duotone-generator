@@ -1,3 +1,5 @@
+'use strict'
+
 const chroma = require('chroma-js')
 const execa = require('execa')
 const Confirm = require('prompt-confirm')
