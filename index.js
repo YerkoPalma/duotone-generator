@@ -36,15 +36,24 @@ function generate (hueUno, hueDuo) {
   })
 }
 
+function getRandomInt (min, max) {
+  min = Math.ceil(min)
+  max = Math.floor(max)
+  return Math.floor(Math.random() * (max - min)) + min
+}
+
 const gen = (hueUno, hueDuo, options) => {
+  if (typeof hueUno === 'object') options = hueUno
   options = options || {}
-  if (!hueUno) {
-    hueUno = Math.rand() // random Hue
-    hueDuo = Math.rand() // random Hue
+
+  if (!hueUno || (typeof hueUno !== 'number' && typeof hueUno !== 'number')) {
+    hueUno = getRandomInt(0, 360) // random Hue
+    hueDuo = getRandomInt(0, 360) // random Hue
   }
-  if (!hueDuo) {
-    hueDuo = Math.rand() // random Hue
+  if (!hueDuo || (typeof hueDuo !== 'number' && typeof hueDuo !== 'number')) {
+    hueDuo = getRandomInt(0, 360) // random Hue
   }
+
   if (typeof options.name === 'string') themeName = options.name
   generate(hueUno, hueDuo)
 }
@@ -61,7 +70,7 @@ const check = (hueUno, hueDuo, options) => {
   const minimum = options.minimum
                   ? (options.minimum === 'AA' || options.minimum === 'AAA' ? minimums[options.minimum] : minimums['AA'])
                   : minimums['AA']
-
+  if (typeof options.name === 'string') themeName = options.name
   const colorUno = chroma.hsl(hueUno, 0.99, 0.96)
   const colorDuo = chroma.hsl(hueDuo, 0.99, 0.77)
   const bgColor = chroma.hsl(hueUno, 0.12, 0.18)
