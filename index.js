@@ -16,8 +16,35 @@ const minimums = {
 const REPO = 'https://github.com/simurai/duotone-syntax.git'
 let themeName = 'duotone-syntax'
 
-const gen = (hueUno, hueDuo, options) => {
+function generate (hueUno, hueDuo) {
+  execa('git', ['clone', REPO, themeName]).then(result => {
+    // the colors.less file from the original repo
+    const colors = path.resolve(__dirname, path.join(themeName, 'styles', 'colors.less'))
+    fs.readFile(colors, 'utf8', (err, data) => {
+      if (err) {
+        return console.error(err)
+      }
+      let result = data.replace(/@syntax-uno:\s*\d*;/g, `@syntax-uno:    ${hueUno};`)
+      result = result.replace(/@syntax-duo:\s*\d*;/g, `@syntax-duo:    ${hueDuo};`)
 
+      fs.writeFile(colors, result, 'utf8', err => {
+        if (err) return console.error(err)
+      })
+    })
+  })
+}
+
+const gen = (hueUno, hueDuo, options) => {
+  options = options || {}
+  if (!hueUno) {
+    hueUno = Math.rand() // random Hue
+    hueDuo = Math.rand() // random Hue
+  }
+  if (!hueDuo) {
+    hueDuo = Math.rand() // random Hue
+  }
+  if (typeof options.name === 'string') themeName = options.name
+  generate(hueUno, hueDuo)
 }
 
 const check = (hueUno, hueDuo, options) => {
@@ -56,22 +83,7 @@ const check = (hueUno, hueDuo, options) => {
       if (!answer) process.exit(0)
 
       // duo gen::
-      execa('git', ['clone', REPO]).then(result => {
-        // the colors.less file from the original repo
-        const colors = path.resolve(__dirname, path.join(themeName, 'styles', 'colors.less'))
-
-        fs.readFile(colors, 'utf8', (err, data) => {
-          if (err) {
-            return console.log(err)
-          }
-          let result = data.replace(/@syntax-uno:\s*240;/g, `@syntax-uno:    ${hueUno};`)
-          result = result.replace(/@syntax-duo:\s*20;/g, `@syntax-duo:    ${hueDuo};`)
-
-          fs.writeFile(colors, result, 'utf8', err => {
-            if (err) return console.log(err)
-          })
-        })
-      })
+      generate(hueUno, hueDuo)
       // ::duo gen
     })
   }
