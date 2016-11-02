@@ -2,7 +2,7 @@
   "name": "duotone-generator",
   "description": "generate duotone atom themes with contrast checker",
   "author": "YerkoPalma",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "main": "index.js",
   "bin": {
     "duo": "cli.js"
