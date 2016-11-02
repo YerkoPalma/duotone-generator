@@ -19,7 +19,7 @@ let themeName = 'duotone-syntax'
 function generate (hueUno, hueDuo) {
   execa('git', ['clone', REPO, themeName]).then(result => {
     // the colors.less file from the original repo
-    const colors = path.resolve(__dirname, path.join(themeName, 'styles', 'colors.less'))
+    const colors = path.resolve(process.cwd(), path.join(themeName, 'styles', 'colors.less'))
     fs.readFile(colors, 'utf8', (err, data) => {
       if (err) {
         return console.error(err)
