@@ -20,8 +20,31 @@ let themeName = 'duotone-syntax'
 const errorColor = chroma('red').brighten().rgb()
 const successColor = chroma('lightgreen').rgb()
 
-function previewTheme () {
-  
+function previewTheme (uno, duo) {
+  // generate the 8 shades
+  const uno1 = chroma.hsl(uno, 0.99, 0.96).rgb()
+  const uno2 = chroma.hsl(uno, 0.88, 0.84).rgb()
+  const uno3 = chroma.hsl(uno, 0.66, 0.74).rgb()
+  const uno4 = chroma.hsl(uno, 0.22, 0.48).rgb()
+  const uno5 = chroma.hsl(uno, 0.11, 0.34).rgb()
+
+  const duo1 = chroma.hsl(duo, 0.99, 0.78).rgb()
+  const duo2 = chroma.hsl(duo, 0.44, 0.48).rgb()
+  const duo3 = chroma.hsl(duo, 0.22, 0.38).rgb()
+
+  const bg = chroma.hsl(uno, 0.14, 0.18).rgb()
+  // show them
+  console.log(`${style.bgColor.ansi256.rgb(...bg)}
+  ${style.color.ansi256.rgb(...uno1)}uno-1       ${chroma(...uno1, 'rgb').hex()}${style.color.close}
+  ${style.color.ansi256.rgb(...uno2)}uno-2       ${chroma(...uno2, 'rgb').hex()}${style.color.close}
+  ${style.color.ansi256.rgb(...uno3)}uno-3       ${chroma(...uno3, 'rgb').hex()}${style.color.close}
+  ${style.color.ansi256.rgb(...uno4)}uno-4       ${chroma(...uno4, 'rgb').hex()}${style.color.close}
+  ${style.color.ansi256.rgb(...uno5)}uno-5       ${chroma(...uno5, 'rgb').hex()}${style.color.close}
+
+  ${style.color.ansi256.rgb(...duo1)}duo-1       ${chroma(...duo1, 'rgb').hex()}${style.color.close}
+  ${style.color.ansi256.rgb(...duo2)}duo-2       ${chroma(...duo2, 'rgb').hex()}${style.color.close}
+  ${style.color.ansi256.rgb(...duo3)}duo-3       ${chroma(...duo3, 'rgb').hex()}${style.color.close}${style.bgColor.close}
+  `)
 }
 
 function generate (hueUno, hueDuo) {
@@ -37,7 +60,7 @@ function generate (hueUno, hueDuo) {
 
       fs.writeFile(colors, result, 'utf8', err => {
         if (err) return console.error(err)
-        console.log(`${style.color.ansi256.rgb(...successColor)}Your new theme ${themeName} has been generated${style.color.close}`)
+        console.log(`Your new theme ${style.color.ansi256.rgb(...successColor)}${themeName}${style.color.close} has been generated`)
       })
     })
   }).catch(err => {
@@ -66,6 +89,7 @@ const gen = (hueUno, hueDuo, options) => {
 
   if (typeof options.name === 'string') themeName = options.name
   generate(hueUno, hueDuo)
+  previewTheme(hueUno, hueDuo)
 }
 
 const check = (hueUno, hueDuo, options) => {
@@ -93,6 +117,7 @@ const check = (hueUno, hueDuo, options) => {
     // console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
     process.exit(1)
   } else {
+    previewTheme(hueUno, hueDuo)
     const confirmGeneration = new Confirm({
       name: 'generate',
       message: 'Your colors are fine, would you like to generate a duotone theme now?'
