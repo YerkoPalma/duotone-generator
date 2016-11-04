@@ -33,6 +33,8 @@ function generate (hueUno, hueDuo) {
         if (err) return console.error(err)
       })
     })
+  }).catch(err => {
+    console.log(`failed to clone in ${process.cwd()}. [Error]: ${err}`)
   })
 }
 

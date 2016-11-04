@@ -22,11 +22,17 @@ test('duo check', t => {
   // theme/styles/colors.less must have user hues
 })
 
-test('duo gen', t => {
+test.skip('duo gen', t => {
+  t.plan(3)
   // test arguments
   // gen should work 0 to 2 arguments
+  t.notThrows(() => { duotoneGenerator.gen(1,50, {name: 'one', n: 'one'}) })
+
   // if no arguments, two hues are generated with maximum contrast difference
+  t.notThrows(() => { duotoneGenerator.gen({name: 'two', n: 'two'}) })
+
   // if one argument, a second hue is generated with maximum contrast difference
+  t.notThrows(() => { duotoneGenerator.gen(250, {name: 'three', n: 'three'}) })
 
   // default minimum should be AA
   // opts can change minimum
