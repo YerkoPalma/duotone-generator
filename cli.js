@@ -39,10 +39,10 @@ if (cli.input.length === 0) {
 
 if (cli.input[0] === 'gen') {
   const colors = cli.input.slice(1)
-  duo.gen(...colors, cli.flags)
+  duo.gen.apply(null, colors)
 }
 
 if (cli.input[0] === 'check') {
   const colors = cli.input.slice(1)
-  duo.check(...colors, cli.flags)
+  duo.check.apply(null, colors)
 }
