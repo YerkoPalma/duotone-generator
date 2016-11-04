@@ -34,16 +34,16 @@ function previewTheme (uno, duo) {
 
   const bg = chroma.hsl(uno, 0.14, 0.18).rgb()
   // show them
-  console.log(`${style.bgColor.ansi256.rgb(...bg)}
-  ${style.color.ansi256.rgb(...uno1)}uno-1       ${chroma(...uno1, 'rgb').hex()}${style.color.close}
-  ${style.color.ansi256.rgb(...uno2)}uno-2       ${chroma(...uno2, 'rgb').hex()}${style.color.close}
-  ${style.color.ansi256.rgb(...uno3)}uno-3       ${chroma(...uno3, 'rgb').hex()}${style.color.close}
-  ${style.color.ansi256.rgb(...uno4)}uno-4       ${chroma(...uno4, 'rgb').hex()}${style.color.close}
-  ${style.color.ansi256.rgb(...uno5)}uno-5       ${chroma(...uno5, 'rgb').hex()}${style.color.close}
+  console.log(`${style.bgColor.ansi256.rgb.apply(null, bg)}
+  ${style.color.ansi256.rgb.apply(null, uno1)}uno-1       ${chroma.apply(null, uno1).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno2)}uno-2       ${chroma.apply(null, uno2).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno3)}uno-3       ${chroma.apply(null, uno3).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno4)}uno-4       ${chroma.apply(null, uno4).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno5)}uno-5       ${chroma.apply(null, uno5).hex()}${style.color.close}
 
-  ${style.color.ansi256.rgb(...duo1)}duo-1       ${chroma(...duo1, 'rgb').hex()}${style.color.close}
-  ${style.color.ansi256.rgb(...duo2)}duo-2       ${chroma(...duo2, 'rgb').hex()}${style.color.close}
-  ${style.color.ansi256.rgb(...duo3)}duo-3       ${chroma(...duo3, 'rgb').hex()}${style.color.close}${style.bgColor.close}
+  ${style.color.ansi256.rgb.apply(null, duo1)}duo-1       ${chroma.apply(null, duo1).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, duo2)}duo-2       ${chroma.apply(null, duo2).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, duo3)}duo-3       ${chroma.apply(null, duo3).hex()}${style.color.close}${style.bgColor.close}
   `)
 }
 
@@ -60,11 +60,11 @@ function generate (hueUno, hueDuo) {
 
       fs.writeFile(colors, result, 'utf8', err => {
         if (err) return console.error(err)
-        console.log(`Your new theme ${style.color.ansi256.rgb(...successColor)}${themeName}${style.color.close} has been generated`)
+        console.log(`Your new theme ${style.color.ansi256.rgb.apply(null, successColor)}${themeName}${style.color.close} has been generated`)
       })
     })
   }).catch(err => {
-    console.log(`${style.color.ansi256.rgb(...errorColor)}Failed to clone in ${process.cwd()} ${style.color.close}.
+    console.log(`${style.color.ansi256.rgb.apply(null, errorColor)}Failed to clone in ${process.cwd()} ${style.color.close}.
     [Error]: ${err}`)
   })
 }
@@ -113,7 +113,7 @@ const check = (hueUno, hueDuo, options) => {
   const contrastDuo = chroma.contrast(colorDuo, bgColor)
 
   if (contrastUno < minimum || contrastDuo < minimum) {
-    console.log(`${style.color.ansi256.grb(...errorColor)} Contrast too low ${style.color.close}`)
+    console.log(`${style.color.ansi256.grb.apply(null, errorColor)} Contrast too low ${style.color.close}`)
     // console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
     process.exit(1)
   } else {
