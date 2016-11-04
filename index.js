@@ -6,7 +6,7 @@ const Confirm = require('prompt-confirm')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
-// const style = require('ansi-styles')
+const style = require('./ansi-styles')
 
 // minimum contrast constants
 const minimums = {
@@ -17,6 +17,12 @@ const minimums = {
 // base repo for the theme
 const REPO = 'https://github.com/simurai/duotone-syntax.git'
 let themeName = 'duotone-syntax'
+const errorColor = chroma('red').brighten().rgb()
+const successColor = chroma('lightgreen').rgb()
+
+function previewTheme () {
+  
+}
 
 function generate (hueUno, hueDuo) {
   execa('git', ['clone', REPO, themeName]).then(result => {
@@ -31,10 +37,12 @@ function generate (hueUno, hueDuo) {
 
       fs.writeFile(colors, result, 'utf8', err => {
         if (err) return console.error(err)
+        console.log(`${style.color.ansi256.rgb(...successColor)}Your new theme ${themeName} has been generated${style.color.close}`)
       })
     })
   }).catch(err => {
-    console.log(`failed to clone in ${process.cwd()}. [Error]: ${err}`)
+    console.log(`${style.color.ansi256.rgb(...errorColor)}Failed to clone in ${process.cwd()} ${style.color.close}.
+    [Error]: ${err}`)
   })
 }
 
@@ -79,12 +87,10 @@ const check = (hueUno, hueDuo, options) => {
 
   const contrastUno = chroma.contrast(colorUno, bgColor)
   const contrastDuo = chroma.contrast(colorDuo, bgColor)
-  // const errorColor = chroma('pink').rgb
-  // const successColor = chroma('green').rgb
 
   if (contrastUno < minimum || contrastDuo < minimum) {
-    // console.log(`${style.color.ansi256.grb(...errorColor)} Contrast too low ${style.color.close}`)
-    console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
+    console.log(`${style.color.ansi256.grb(...errorColor)} Contrast too low ${style.color.close}`)
+    // console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
     process.exit(1)
   } else {
     const confirmGeneration = new Confirm({
