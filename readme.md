@@ -2,6 +2,8 @@
 
 > generate duotone atom themes with contrast checker
 
+![cli](https://cloud.githubusercontent.com/assets/5105812/20016542/b2978dae-a29e-11e6-8407-21e9410c60fa.png)
+
 ## Installation
 
 ```bash
