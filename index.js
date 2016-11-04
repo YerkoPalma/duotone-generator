@@ -6,7 +6,7 @@ const Confirm = require('prompt-confirm')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
-// const style = require('ansi-styles')
+const style = require('./ansi-styles')
 
 // minimum contrast constants
 const minimums = {
@@ -17,6 +17,35 @@ const minimums = {
 // base repo for the theme
 const REPO = 'https://github.com/simurai/duotone-syntax.git'
 let themeName = 'duotone-syntax'
+const errorColor = chroma('red').brighten().rgb()
+const successColor = chroma('lightgreen').rgb()
+
+function previewTheme (uno, duo) {
+  // generate the 8 shades
+  const uno1 = chroma.hsl(uno, 0.99, 0.96).rgb()
+  const uno2 = chroma.hsl(uno, 0.88, 0.84).rgb()
+  const uno3 = chroma.hsl(uno, 0.66, 0.74).rgb()
+  const uno4 = chroma.hsl(uno, 0.22, 0.48).rgb()
+  const uno5 = chroma.hsl(uno, 0.11, 0.34).rgb()
+
+  const duo1 = chroma.hsl(duo, 0.99, 0.78).rgb()
+  const duo2 = chroma.hsl(duo, 0.44, 0.48).rgb()
+  const duo3 = chroma.hsl(duo, 0.22, 0.38).rgb()
+
+  const bg = chroma.hsl(uno, 0.14, 0.18).rgb()
+  // show them
+  console.log(`${style.bgColor.ansi256.rgb.apply(null, bg)}
+  ${style.color.ansi256.rgb.apply(null, uno1)}uno-1       ${chroma.apply(null, uno1).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno2)}uno-2       ${chroma.apply(null, uno2).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno3)}uno-3       ${chroma.apply(null, uno3).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno4)}uno-4       ${chroma.apply(null, uno4).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, uno5)}uno-5       ${chroma.apply(null, uno5).hex()}${style.color.close}
+
+  ${style.color.ansi256.rgb.apply(null, duo1)}duo-1       ${chroma.apply(null, duo1).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, duo2)}duo-2       ${chroma.apply(null, duo2).hex()}${style.color.close}
+  ${style.color.ansi256.rgb.apply(null, duo3)}duo-3       ${chroma.apply(null, duo3).hex()}${style.color.close}${style.bgColor.close}
+  `)
+}
 
 function generate (hueUno, hueDuo) {
   execa('git', ['clone', REPO, themeName]).then(result => {
@@ -31,10 +60,12 @@ function generate (hueUno, hueDuo) {
 
       fs.writeFile(colors, result, 'utf8', err => {
         if (err) return console.error(err)
+        console.log(`Your new theme ${style.color.ansi256.rgb.apply(null, successColor)}${themeName}${style.color.close} has been generated`)
       })
     })
   }).catch(err => {
-    console.log(`failed to clone in ${process.cwd()}. [Error]: ${err}`)
+    console.log(`${style.color.ansi256.rgb.apply(null, errorColor)}Failed to clone in ${process.cwd()} ${style.color.close}.
+    [Error]: ${err}`)
   })
 }
 
@@ -58,6 +89,7 @@ const gen = (hueUno, hueDuo, options) => {
 
   if (typeof options.name === 'string') themeName = options.name
   generate(hueUno, hueDuo)
+  previewTheme(hueUno, hueDuo)
 }
 
 const check = (hueUno, hueDuo, options) => {
@@ -79,14 +111,13 @@ const check = (hueUno, hueDuo, options) => {
 
   const contrastUno = chroma.contrast(colorUno, bgColor)
   const contrastDuo = chroma.contrast(colorDuo, bgColor)
-  // const errorColor = chroma('pink').rgb
-  // const successColor = chroma('green').rgb
 
   if (contrastUno < minimum || contrastDuo < minimum) {
-    // console.log(`${style.color.ansi256.grb(...errorColor)} Contrast too low ${style.color.close}`)
-    console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
+    console.log(`${style.color.ansi256.grb.apply(null, errorColor)} Contrast too low ${style.color.close}`)
+    // console.log(`contrast too low contrast uno: ${contrastUno}; contrast duo: ${contrastDuo}`)
     process.exit(1)
   } else {
+    previewTheme(hueUno, hueDuo)
     const confirmGeneration = new Confirm({
       name: 'generate',
       message: 'Your colors are fine, would you like to generate a duotone theme now?'

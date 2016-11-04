@@ -17,7 +17,10 @@
     ]
   },
   "standard": {
-    "ignore": "test.js"
+    "ignore": [
+      "test.js",
+      "ansi-styles.js"
+    ]
   },
   "scripts": {
     "test": "standard --verbose | snazzy && ava"
@@ -29,6 +32,7 @@
     "ansi-styles": "2.1.0",
     "assert": "^1.4.1",
     "chroma-js": "^1.2.1",
+    "color-convert": "^1.6.0",
     "execa": "^0.5.0",
     "meow": "^3.7.0",
     "prompt-confirm": "^0.2.1"
