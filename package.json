@@ -9,7 +9,8 @@
   },
   "files": [
     "cli.js",
-    "index.js"
+    "index.js",
+    "ansi-styles.js"
   ],
   "browserify": {
     "transform": [
