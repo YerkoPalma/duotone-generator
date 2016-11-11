@@ -36,6 +36,7 @@
     "color-convert": "^1.6.0",
     "execa": "^0.5.0",
     "meow": "^3.7.0",
+    "pageres": "^4.2.0",
     "prompt-confirm": "^0.2.1"
   },
   "devDependencies": {

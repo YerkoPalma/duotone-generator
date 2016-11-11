@@ -6,6 +6,7 @@ const Confirm = require('prompt-confirm')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
+const Pageres = require('pageres')
 const style = require('./ansi-styles')
 
 // minimum contrast constants
@@ -51,6 +52,7 @@ function updateDocs (ghUser) {
   const updateScript = path.resolve(process.cwd(), path.join(themeName, 'docs', 'update.sh'))
   execa(updateScript).then(() => {
     const docHtml = path.resolve(process.cwd(), path.join(themeName, 'docs', 'index.html'))
+    const docReadme = path.resolve(process.cwd(), path.join(themeName, 'README.md'))
     fs.readFile(docHtml, 'utf8', (err, data) => {
       if (err) {
         return console.error(err)
@@ -59,10 +61,30 @@ function updateDocs (ghUser) {
       let result = data.replace(/duotone-xxx-syntax/g, themeName)
       // replace github username in docs
       result = result.replace(/xxx/g, ghUser)
+      result = result.replace('<div class="logo-name uno-4">theme<span class="duo-1">NAME</span></div>', `<div class="logo-name uno-4">theme <span class="duo-1">${themeName}</span></div>`)
 
       fs.writeFile(docHtml, result, 'utf8', err => {
         if (err) return console.error(err)
-        console.log(`${style.color.ansi256.rgb.apply(null, successColor)}Docs updated!${style.color.close}`)
+        // take screenshot of the theme
+        /* eslint-disable no-unused-vars */
+        const stream = new Pageres()
+          .src(docHtml, ['1020x840'], { filename: 'screenshot', crop: true })
+          .dest(path.resolve(process.cwd(), path.join(themeName, 'docs')))
+          .run()
+          .then(() => {
+            fs.readFile(docReadme, 'utf8', (err, data) => {
+              if (err) {
+                return console.error(err)
+              }
+              result = data.replace('https://github.com/simurai/duotone-syntax/raw/master/docs/screenshot.png', 'docs/screenshot.png')
+              fs.writeFile(docReadme, result, 'utf8', err => {
+                if (err) {
+                  return console.error(err)
+                }
+                console.log(`${style.color.ansi256.rgb.apply(null, successColor)}Docs updated!${style.color.close}`)
+              })
+            })
+          })
       })
     })
   })
