@@ -6,7 +6,6 @@ const Confirm = require('prompt-confirm')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
-const Question = require('prompt-question')
 const style = require('./ansi-styles')
 
 // minimum contrast constants
@@ -69,7 +68,7 @@ function updateDocs (ghUser) {
   })
 }
 
-function generate (hueUno, hueDuo) {
+function generate (hueUno, hueDuo, options) {
   execa('git', ['clone', REPO, themeName]).then(result => {
     // the colors.less file from the original repo
     const colors = path.resolve(process.cwd(), path.join(themeName, 'styles', 'colors.less'))
@@ -83,15 +82,10 @@ function generate (hueUno, hueDuo) {
       fs.writeFile(colors, result, 'utf8', err => {
         if (err) return console.error(err)
         console.log(`Your new theme ${style.color.ansi256.rgb.apply(null, successColor)}${themeName}${style.color.close} has been generated`)
-        const ghUser = new Question('ghuser', 'What\'s your github username?')
-        console.log(ghUser)
-        /* ghUser.ask(answer => {
-          if (!answer) process.exit(0)
-    
-          // duo gen::
-          updateDocs(answer)
-          // ::duo gen
-        }) */
+
+        if (options.username && typeof options.username === 'string') {
+          updateDocs(options.username)
+        }
       })
     })
   }).catch(err => {
@@ -108,6 +102,7 @@ function getRandomInt (min, max) {
 
 const gen = (hueUno, hueDuo, options) => {
   if (typeof hueUno === 'object') options = hueUno
+  if (typeof hueDuo === 'object') options = hueDuo
   options = options || {}
 
   if (!hueUno || (typeof hueUno !== 'number' && typeof hueUno !== 'number')) {
@@ -117,9 +112,8 @@ const gen = (hueUno, hueDuo, options) => {
   if (!hueDuo || (typeof hueDuo !== 'number' && typeof hueDuo !== 'number')) {
     hueDuo = getRandomInt(0, 360) // random Hue
   }
-
   if (typeof options.name === 'string') themeName = options.name
-  generate(hueUno, hueDuo)
+  generate(hueUno, hueDuo, options)
   previewTheme(hueUno, hueDuo)
 }
 
