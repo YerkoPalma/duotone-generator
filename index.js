@@ -6,6 +6,7 @@ const Confirm = require('prompt-confirm')
 const path = require('path')
 const fs = require('fs')
 const assert = require('assert')
+const Question = require('prompt-question')
 const style = require('./ansi-styles')
 
 // minimum contrast constants
@@ -47,6 +48,27 @@ function previewTheme (uno, duo) {
   `)
 }
 
+function updateDocs (ghUser) {
+  const updateScript = path.resolve(process.cwd(), path.join(themeName, 'docs', 'update.sh'))
+  execa(updateScript).then(() => {
+    const docHtml = path.resolve(process.cwd(), path.join(themeName, 'docs', 'index.html'))
+    fs.readFile(docHtml, 'utf8', (err, data) => {
+      if (err) {
+        return console.error(err)
+      }
+      // replace theme name in docs
+      let result = data.replace(/duotone-xxx-syntax/g, themeName)
+      // replace github username in docs
+      result = result.replace(/xxx/g, ghUser)
+
+      fs.writeFile(docHtml, result, 'utf8', err => {
+        if (err) return console.error(err)
+        console.log(`${style.color.ansi256.rgb.apply(null, successColor)}Docs updated!${style.color.close}`)
+      })
+    })
+  })
+}
+
 function generate (hueUno, hueDuo) {
   execa('git', ['clone', REPO, themeName]).then(result => {
     // the colors.less file from the original repo
@@ -61,6 +83,15 @@ function generate (hueUno, hueDuo) {
       fs.writeFile(colors, result, 'utf8', err => {
         if (err) return console.error(err)
         console.log(`Your new theme ${style.color.ansi256.rgb.apply(null, successColor)}${themeName}${style.color.close} has been generated`)
+        const ghUser = new Question('ghuser', 'What\'s your github username?')
+        console.log(ghUser)
+        /* ghUser.ask(answer => {
+          if (!answer) process.exit(0)
+    
+          // duo gen::
+          updateDocs(answer)
+          // ::duo gen
+        }) */
       })
     })
   }).catch(err => {
