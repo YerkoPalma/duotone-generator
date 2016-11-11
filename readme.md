@@ -1,4 +1,4 @@
-# duotone-generator [![Build Status](https://secure.travis-ci.org/YerkoPalma/duotone-generator.svg?branch=master)](https://travis-ci.org/YerkoPalma/duotone-generator) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
+# duotone-generator [![npm version](https://img.shields.io/npm/v/duotone-generator.svg?style=flat-square)](https://www.npmjs.com/package/duotone-generator) [![Build Status](https://img.shields.io/travis/YerkoPalma/duotone-generator/master.svg?style=flat-square)](https://travis-ci.org/YerkoPalma/duotone-generator) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/feross/standard)
 
 > generate duotone atom themes with contrast checker
 
@@ -43,6 +43,7 @@ $ duo --help
   Options
     --name, -n         The name of your theme. (Default: '')
     --minimum, -m      The minimum contrast to validate when checking. (Default: 'AA')
+    --username, -u     Github username. Add it if you want to also update the docs in the cloned theme
 
   Examples
     duo gen
@@ -59,4 +60,3 @@ $ duo --help
 [MIT](/license)
 
 Crafted by Yerko ([@yerko_palma](https://twitter.com/yerko_palma))
-
